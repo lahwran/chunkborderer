@@ -27,6 +27,10 @@ print "# loading world (%d)" % time.time()
 world = mclevel.fromFile("world")
 print "# loading chunks (%d)" % time.time()
 chunkPositions = set(world.allChunks)
+print "## logging found chunks to file cbr_chunks"
+writer = open("cbr_chunks","wb")
+writer.write(repr(chunkPositions))
+writer.close()
 
 def vadd(vec1, vec2):
     if len(vec1) != len(vec2):
@@ -40,6 +44,12 @@ print "# finding chunk edges (%d)" % time.time()
 #find the edges
 allwalls = [(c,tuple([(vadd(c, ofs) not in chunkPositions) for ofs in square])) for c in chunkPositions]
 walls=[x for x in allwalls if sum(x[1]) > 0]
+
+print "## logging found edges to file cbr_edges"
+writer = open("cbr_edges","wb")
+writer.write(repr(walls))
+writer.close()
+
 print "# adding bedrock to edges (%d)" % time.time()
 #add bedrock to the edges
 for wall in walls:
