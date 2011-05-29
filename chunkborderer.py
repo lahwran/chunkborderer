@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import sys, os, time
-sys.path.add(os.realpath(".."))
+#sys.path.add(os.realpath(".."))
 
 #import pymclevel
 try:
@@ -39,7 +39,7 @@ square3=[(15,16,0,16,0,128), (0,1,0,16,0,128), (0,16,15,16,0,128), (0,16,0,1,0,1
 print "# finding chunk edges (%d)" % time.time()
 #find the edges
 allwalls = [(c,tuple([(vadd(c, ofs) not in chunkPositions) for ofs in square])) for c in chunkPositions]
-walls=[x for x in walls if sum(x[1]) > 0]
+walls=[x for x in allwalls if sum(x[1]) > 0]
 print "# adding bedrock to edges (%d)" % time.time()
 #add bedrock to the edges
 for wall in walls:
