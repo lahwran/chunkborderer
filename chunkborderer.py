@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import sys, os
+import sys, os, time
 sys.path.add(os.realpath(".."))
 
 #import pymclevel
@@ -23,7 +23,9 @@ if err:
     sys.exit(1)
     
 #get the world and a chunk set
+print "# loading world (%d)" % time.time()
 world = mclevel.fromFile("world")
+print "# loading chunks (%d)" % time.time()
 chunkPositions = set(world.allChunks)
 
 def vadd(vec1, vec2):
@@ -34,11 +36,11 @@ def vadd(vec1, vec2):
 #offset definitions
 square=((1,0),(-1,0),(0,1),(0,-1))
 square3=[(15,16,0,16,0,128), (0,1,0,16,0,128), (0,16,15,16,0,128), (0,16,0,1,0,128)]
-
+print "# finding chunk edges (%d)" % time.time()
 #find the edges
 allwalls = [(c,tuple([(vadd(c, ofs) not in chunkPositions) for ofs in square])) for c in chunkPositions]
 walls=[x for x in walls if sum(x[1]) > 0]
-
+print "# adding bedrock to edges (%d)" % time.time()
 #add bedrock to the edges
 for wall in walls:
     c = world.getChunk(wall[0][0], wall[0][1])
@@ -46,7 +48,12 @@ for wall in walls:
         if wall[1][num]:
             i=square3[num]
             c.Blocks[i[0]:i[1],i[2]:i[3],i[4]:i[5]] = 7
+
+print "# marking changed chunks dirty (%d)" % time.time()
+for wall in walls:
+    c = world.getChunk(wall[0][0], wall[0][1])
     c.chunkChanged()
     
-#save
+print "# saving world (%d)" % time.time()
 world.saveInPlace()
+print "# done (%d)" % time.time()
