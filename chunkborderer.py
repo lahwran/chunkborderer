@@ -24,7 +24,7 @@ if err:
     
 #get the world and a chunk set
 print "# loading world (%d)" % time.time()
-world = mclevel.fromFile("world")
+world = mclevel.fromFile("world_modif")
 print "# loading chunks (%d)" % time.time()
 chunkPositions = set(world.allChunks)
 print "## logging found chunks to file cbr_chunks"
@@ -51,6 +51,8 @@ writer.write(repr(walls))
 writer.close()
 
 print "# adding bedrock to edges (%d)" % time.time()
+
+count = 0
 #add bedrock to the edges
 for wall in walls:
     c = world.getChunk(wall[0][0], wall[0][1])
@@ -58,12 +60,9 @@ for wall in walls:
         if wall[1][num]:
             i=square3[num]
             c.Blocks[i[0]:i[1],i[2]:i[3],i[4]:i[5]] = 7
-
-print "# marking changed chunks dirty (%d)" % time.time()
-for wall in walls:
-    c = world.getChunk(wall[0][0], wall[0][1])
     c.chunkChanged()
-    
-print "# saving world (%d)" % time.time()
+    time.sleep(0.005)
+    if count%30 == 29:
+        world.saveInPlace()
 world.saveInPlace()
 print "# done (%d)" % time.time()
